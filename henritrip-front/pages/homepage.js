@@ -8,6 +8,7 @@ import {
   Dimensions,
   StatusBar,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 
 import Spacer from "../components/spacer";
@@ -15,47 +16,101 @@ import LogoSVG from "../assets/Logo_henri-side.svg";
 import Feather from "@expo/vector-icons/Feather";
 import AdressInput from "../components/adressInput";
 import MyBtn from "../components/myBtn";
+import MyTooltip from "../components/tooltip";
 
-export default HomePage = ({ navigation }) => {
-  return (
-    <SafeAreaView style={{ ...homeStyle.home, height: "100%" }}>
-      <View style={homeStyle.nav}>
-        <TouchableOpacity
-          style={homeStyle.navMenu}
-          onPress={() => {
-            console.log("Pressed");
-          }}
-        >
-          <Feather name="menu" size={25} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            console.log("Pressed");
-          }}
-        >
-          <LogoSVG width={120} height={55} />
-        </TouchableOpacity>
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { DrawerActions } from "@react-navigation/native";
+const Drawer = createDrawerNavigator();
+
+export default HomePage = ({ nav }) => {
+  const [isVisible, setVisible] = useState(false);
+  const myMarginTop = isVisible ? 0 : StatusBar.currentHeight;
+  const Profile = ({ navigation }) => {
+    return (
+      <View>
+        <Text>Hello</Text>
       </View>
-      <Spacer height={50} />
-      <View style={homeStyle.homeTxtView}>
-        <Text style={homeStyle.homeTxt}>
-          J'organise mon itinéraire pour partir <Text>dans les alpes</Text>
-        </Text>
-      </View>
-      <Spacer height={40} />
-      <View style={homeStyle.searchContainer}>
-        <AdressInput />
-        <Spacer height={5} />
-        <AdressInput title="Date(s)" description="Ajoutez vos dates" />
-        <Spacer height={10} />
-        <MyBtn
-          nav={navigation}
-          title={"Chercher"}
-          color="#598cb7"
-          icon="search"
+    );
+  };
+  const Home = ({ navigation }) => {
+    return (
+      <ScrollView style={{ ...homeStyle.home, height: "100%", flexGrow: 1 }}>
+        <StatusBar animated={!isVisible} hidden={isVisible} />
+        <View style={homeStyle.nav}>
+          <TouchableOpacity
+            style={homeStyle.navMenu}
+            onPress={() => {
+              console.log("Pressed Menu");
+
+              navigation.toggleDrawer();
+            }}
+          >
+            <Feather name="menu" size={25} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              console.log("Pressed");
+            }}
+          >
+            <LogoSVG width={120} height={55} />
+          </TouchableOpacity>
+        </View>
+        <Spacer height={50} />
+        <View style={homeStyle.homeTxtView}>
+          <Text style={homeStyle.homeTxt}>
+            J'organise mon itinéraire pour partir <Text>dans les alpes</Text>
+          </Text>
+        </View>
+        <Spacer height={40} />
+        <View style={homeStyle.searchContainer}>
+          <AdressInput />
+          <Spacer height={5} />
+          <AdressInput title="Date(s)" description="Ajoutez vos dates" />
+          <Spacer height={10} />
+          <View style={homeStyle.tooltipAndButton}>
+            <TouchableOpacity
+              style={homeStyle.tooltip}
+              onPress={() => {
+                console.log("PRessed");
+                setVisible(!isVisible);
+              }}
+            >
+              <Ionicons name="information" size={18} color="orange" />
+            </TouchableOpacity>
+            <MyBtn
+              nav={navigation}
+              title={"Chercher"}
+              color="#598cb7"
+              icon="search"
+            />
+          </View>
+        </View>
+        <Spacer height={25} />
+        <View style={homeStyle.tooltipContainer}></View>
+        <MyTooltip
+          isVisible={isVisible}
+          setVisible={setVisible}
+          title="Informations"
+          desc="Faites vos recherches de RoadTrips parmi les nombreuses que nous proposons !"
         />
-      </View>
-    </SafeAreaView>
+        <View style={homeStyle.tripsRecContainer}>
+          <Text style={homeStyle.tripsRec}>Trips recommandés</Text>
+          <Text style={homeStyle.seeAllTrips}>See All</Text>
+        </View>
+      </ScrollView>
+    );
+  };
+  return (
+    <Drawer.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Profile" component={Profile} />
+    </Drawer.Navigator>
   );
 };
 
@@ -64,9 +119,11 @@ const homeStyle = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     backgroundColor: "rgba(173,216,230, 0.5)",
-    marginTop: StatusBar.currentHeight,
   },
 
+  statusBarMargin: {
+    marginTop: StatusBar.currentHeight,
+  },
   nav: {
     display: "flex",
     flexDirection: "row",
@@ -108,5 +165,40 @@ const homeStyle = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 10,
     rowGap: 5,
+  },
+  tooltip: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "lightgrey",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  tooltipAndButton: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    columnGap: 15,
+  },
+  tripsRecContainer: {
+    paddingHorizontal: 20,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  tripsRec: {
+    fontSize: 22,
+  },
+  seeAllTrips: {
+    fontSize: 18,
+    color: "orange",
+    backgroundColor: "lightgrey",
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
 });

@@ -6,9 +6,10 @@ function isSearch(title) {
 }
 
 export default MyBtn = ({ nav, title, color, icon }) => {
+  const isSearchBtn = isSearch(title);
   const btnCol = color ? color : "orange";
-  const width = isSearch(title) ? "45%" : "65%";
-  const height = isSearch(title) ? 60 : 50;
+  const width = isSearchBtn ? "45%" : "65%";
+  const height = isSearchBtn ? 60 : 50;
   const myTitle = title ? title : "Connexion";
   const btnIcon = icon ? true : false;
   return (
@@ -22,7 +23,7 @@ export default MyBtn = ({ nav, title, color, icon }) => {
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: btnCol,
-        borderRadius: 25,
+        borderRadius: isSearchBtn ? 30 : 25,
         columnGap: 5,
       }}
       onPress={() => {

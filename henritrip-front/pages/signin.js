@@ -61,7 +61,6 @@ const signStyle = StyleSheet.create({
     backgroundColor: "lightblue",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: StatusBar.currentHeight,
   },
   wlcView: {
     display: "flex",
