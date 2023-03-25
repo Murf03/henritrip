@@ -22,6 +22,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DrawerActions } from "@react-navigation/native";
+import Trip from "../components/trip";
 const Drawer = createDrawerNavigator();
 
 export default HomePage = ({ nav }) => {
@@ -36,7 +37,11 @@ export default HomePage = ({ nav }) => {
   };
   const Home = ({ navigation }) => {
     return (
-      <ScrollView style={{ ...homeStyle.home, height: "100%", flexGrow: 1 }}>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        style={{ ...homeStyle.home, height: "100%", flexGrow: 1 }}
+      >
         <StatusBar animated={!isVisible} hidden={isVisible} />
         <View style={homeStyle.nav}>
           <TouchableOpacity
@@ -97,8 +102,59 @@ export default HomePage = ({ nav }) => {
         />
         <View style={homeStyle.tripsRecContainer}>
           <Text style={homeStyle.tripsRec}>Trips recommandés</Text>
-          <Text style={homeStyle.seeAllTrips}>See All</Text>
+          <TouchableOpacity
+            style={homeStyle.seeAllTripsContainer}
+            onPress={() => {
+              console.log("Pressed");
+            }}
+          >
+            <Text style={homeStyle.seeAllTrips}>Voir +</Text>
+          </TouchableOpacity>
         </View>
+        <Spacer height={20} />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 15,
+            rowGap: 20,
+          }}
+        >
+          <Trip
+            createdBy="Pascal Vidal"
+            title="Paris, Ville lumière"
+            city={1}
+            imageNum={0}
+          />
+          <Trip createdBy="Henri Trip." city={0} imageNum={8} />
+          <Trip
+            title="Visite de lieux insolites - Barcelone"
+            createdBy="Emilie Lautrec"
+            city={4}
+            imageNum={3}
+          />
+          <Trip
+            createdBy="Murf M."
+            title="Oh Toulouuuuse !!!"
+            city={0}
+            imageNum={3}
+          />
+          <Trip
+            title="Balade en plein coeur de la ville"
+            createdBy="Benoit Paire"
+            random={true}
+          />
+          <Trip
+            createdBy="Marcelo B."
+            title="Venez découvrir Porto"
+            city={3}
+            imageNum={3}
+          />
+          <Trip createdBy="Laurie P." city={2} imageNum={2} />
+        </View>
+        <Spacer height={50} />
       </ScrollView>
     );
   };
@@ -196,9 +252,15 @@ const homeStyle = StyleSheet.create({
   seeAllTrips: {
     fontSize: 18,
     color: "orange",
+  },
+  seeAllTripsContainer: {
     backgroundColor: "lightgrey",
     borderRadius: 15,
     paddingHorizontal: 10,
     paddingVertical: 5,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
