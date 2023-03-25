@@ -49,7 +49,6 @@ export default MyTextInput = ({ placeholder, setTitle, type }) => {
         placeholderTextColor="#003f5c"
         secureTextEntry={secure}
         onChangeText={(msg) => {
-          console.log(msg);
           setTitle(msg);
         }}
       />

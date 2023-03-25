@@ -25,10 +25,12 @@ import { DrawerActions } from "@react-navigation/native";
 import Trip from "../components/trip";
 const Drawer = createDrawerNavigator();
 
-export default HomePage = ({ nav }) => {
+export default HomePage = ({ nav, route }) => {
   const [isVisible, setVisible] = useState(false);
   const myMarginTop = isVisible ? 0 : StatusBar.currentHeight;
-  const Profile = ({ navigation }) => {
+  const data = route.params;
+  console.log("data : " + data);
+  const Profile = ({ navigation, userId }) => {
     return (
       <View>
         <Text>Hello</Text>
@@ -56,7 +58,8 @@ export default HomePage = ({ nav }) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              console.log("Pressed");
+              console.log("Go to Sign in");
+              navigation.navigate("SignIn");
             }}
           >
             <LogoSVG width={120} height={55} />

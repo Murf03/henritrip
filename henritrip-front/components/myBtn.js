@@ -5,7 +5,7 @@ function isSearch(title) {
   return title === "Chercher";
 }
 
-export default MyBtn = ({ nav, title, color, icon }) => {
+export default MyBtn = ({ nav, title, color, icon, func }) => {
   const isSearchBtn = isSearch(title);
   const btnCol = color ? color : "orange";
   const width = isSearchBtn ? "45%" : "65%";
@@ -26,10 +26,13 @@ export default MyBtn = ({ nav, title, color, icon }) => {
         borderRadius: isSearchBtn ? 30 : 25,
         columnGap: 5,
       }}
-      onPress={() => {
+      onPress={async () => {
         console.log("pressed Login");
-        nav.push("HomePage");
-        //TODO: Edit Login Validation (Btn)
+        const result = await func();
+        console.log(result);
+        nav.push("HomePage", {
+          data: result,
+        });
       }}
     >
       {btnIcon ? <Ionicons name="search" size={17} color="white" /> : null}

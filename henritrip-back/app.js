@@ -30,6 +30,10 @@ mongoose
 
 const app = express();
 
+app.use(cors());
+app.use(express.json()); //permet de gérer les données postées par un formulaire
+app.use(express.urlencoded({ extended: true }));
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -43,15 +47,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
-app.use(express.json()); //permet de gérer les données postées par un formulaire
-app.use(express.urlencoded({ extended: true }));
-
 app.use(limiter);
 
 app.use(mongo_sanitize()); //permet d'éviter l'injection de code
 
-app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
+app.use(
+  helmet({ crossOriginResourcePolicy: false, crossOriginEmbedderPolicy: false })
+);
 
 //Ajouter les routes ici
 app.use("/api/users", usersRoute);
