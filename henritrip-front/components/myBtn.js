@@ -26,14 +26,7 @@ export default MyBtn = ({ nav, title, color, icon, func }) => {
         borderRadius: isSearchBtn ? 30 : 25,
         columnGap: 5,
       }}
-      onPress={async () => {
-        console.log("pressed Login");
-        const result = await func();
-        console.log(result);
-        nav.push("HomePage", {
-          data: result,
-        });
-      }}
+      onPress={() => func(nav)}
     >
       {btnIcon ? <Ionicons name="search" size={17} color="white" /> : null}
       <Text style={{ fontSize: 20, color: "white" }}>{myTitle}</Text>

@@ -17,9 +17,7 @@ function getRole(role, preuve) {
   ) {
     return "USER";
   }
-
   const r = role.trim().toLowerCase();
-
   // On peut avoir une liste de clés de validation pour prouver que l'utilisateur a bien une
   // Authorisation d'admin
   if (r === "admin" && preuve === process.env.ADMIN_KEY) {
@@ -50,7 +48,7 @@ exports.register = (req, res, next) => {
       .save()
       .then(() => {
         console.log("Utilisateur créé");
-        res.status(201).json({ message: "Utilisateur créé" });
+        res.status(201).json({ message: "Utilisateur créé", userID: user._id });
       })
       .catch((error) => {
         const duplMess =

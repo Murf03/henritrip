@@ -28,8 +28,8 @@ const Drawer = createDrawerNavigator();
 export default HomePage = ({ nav, route }) => {
   const [isVisible, setVisible] = useState(false);
   const myMarginTop = isVisible ? 0 : StatusBar.currentHeight;
-  const data = route.params;
-  console.log("data : " + data);
+  const userID = route.params["userID"];
+  console.log("Connecté.e en tant que : " + userID);
   const Profile = ({ navigation, userId }) => {
     return (
       <View>
@@ -42,6 +42,7 @@ export default HomePage = ({ nav, route }) => {
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
         style={{ ...homeStyle.home, height: "100%", flexGrow: 1 }}
       >
         <StatusBar animated={!isVisible} hidden={isVisible} />
@@ -92,6 +93,9 @@ export default HomePage = ({ nav, route }) => {
               title={"Chercher"}
               color="#598cb7"
               icon="search"
+              func={(myNav) => {
+                console.log("Chercher");
+              }}
             />
           </View>
         </View>

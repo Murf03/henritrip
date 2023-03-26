@@ -28,7 +28,9 @@ export default ExternSign = ({ name, nav }) => {
       }}
       onPress={() => {
         console.log(`pressed ${name}`);
-        nav.push("HomePage");
+        nav.push("HomePage", {
+          userID: "NO_ID",
+        });
         //TODO: Edit Login Validation (ExternSign)
       }}
     >

@@ -33,15 +33,22 @@ function isObscure(type) {
   return false;
 }
 
-export default MyTextInput = ({ placeholder, setTitle, type }) => {
+export default MyTextInput = ({ placeholder, setTitle, type, clearError }) => {
   const kbType = getKBType(type);
   const autoComplete = getAutoComplete(type);
   const isPw = isObscure(type);
   const [secure, setSecure] = useState(isPw);
 
+  let clearMyError = () => {
+    if (clearError) {
+      clearError("");
+    }
+  };
+
   return (
     <View style={inputStyle.inputView}>
       <TextInput
+        onFocus={() => clearMyError()}
         style={inputStyle.textInput}
         keyboardType={kbType}
         autoComplete={autoComplete}

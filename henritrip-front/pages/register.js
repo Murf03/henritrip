@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import {
   StyleSheet,
@@ -8,6 +8,9 @@ import {
   Dimensions,
   StatusBar,
   TouchableOpacity,
+  Switch,
+  Animated,
+  Easing,
 } from "react-native";
 import ExternSign from "../components/externSign";
 
@@ -21,10 +24,22 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 const conf = require("../components/env.json");
 
-export default SignIn = ({ navigation }) => {
+export default Register = ({ navigation }) => {
+  //Switch
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [isAdmin, setIsAdmin] = useState("Non");
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+    if (isAdmin === "Non") setIsAdmin("Oui");
+    else setIsAdmin("Non");
+    if (!isEnabled) appear();
+    else disappear();
+  };
+
   const { height, width } = Dimensions.get("window");
   const [mail, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [adminProof, setAdminProof] = useState("");
   const [error, setError] = useState("");
   const [apiError, setApiError] = useState(false);
   const [waitingApiResult, setWaitingApiResult] = useState(false);
@@ -36,8 +51,30 @@ export default SignIn = ({ navigation }) => {
   ];
   const passErrors = ["Mot de passe trop court"];
 
+  const appearAnim = useRef(new Animated.Value(0)).current;
+
+  const appear = () => {
+    // Will change fadeAnim value to 1 in 5 seconds
+    Animated.timing(appearAnim, {
+      toValue: 55,
+      duration: 400,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const disappear = () => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(appearAnim, {
+      toValue: 0,
+      duration: 400,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start();
+  };
+
   //Api
-  const url = conf.baseUrlMobile + "/users/login";
+  const url = conf.baseUrlMobile + "/users/register";
   const api = axios.create({
     baseURL: url,
     headers: { "Content-Type": "application/json" },
@@ -45,7 +82,7 @@ export default SignIn = ({ navigation }) => {
   });
 
   //Login function
-  let login = async () => {
+  let register = async () => {
     //Pour l'instant très petite vérif;
     const mailErrorTooShort = mailErrors[0];
     const mailErrorNoAt = mailErrors[1];
@@ -71,6 +108,8 @@ export default SignIn = ({ navigation }) => {
     const body = {
       email: mail,
       password: pass,
+      role: isEnabled ? "ADMIN" : "USER",
+      preuve: adminProof,
     };
     let apiResult = await api
       .post("/", body)
@@ -101,7 +140,7 @@ export default SignIn = ({ navigation }) => {
   let btnPressed = async (nav) => {
     if (!waitingApiResult) {
       setWaitingApiResult(true);
-      const uid = await login();
+      const uid = await register();
       setWaitingApiResult(false);
       if (checkUID(uid)) {
         nav.push("HomePage", {
@@ -147,16 +186,18 @@ export default SignIn = ({ navigation }) => {
       keyboardShouldPersistTaps="handled"
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
-      style={{ ...signStyle.home, height: "100%", flexGrow: 1 }}
+      style={{ ...registerStyle.home, height: "100%", flexGrow: 1 }}
     >
-      <View style={signStyle.wlcView}>
-        <Text style={signStyle.wlcTxt}>
-          Bienvenu.e sur <Text style={signStyle.appName}>HenriTrip</Text>
+      <View style={registerStyle.wlcView}>
+        <Text style={registerStyle.wlcTxt}>
+          Bienvenu.e sur <Text style={registerStyle.appName}>HenriTrip</Text>
         </Text>
-        <Spacer height={20} />
-        <Text style={signStyle.wlcTxtDesc}>Veuillez vous connecter</Text>
+        <Spacer height={15} />
+        <Text style={registerStyle.wlcTxtDesc}>
+          Veuillez saisir vos informations
+        </Text>
       </View>
-      <Spacer height={50} />
+      <Spacer height={20} />
       <MyTextInput
         placeholder="Email"
         title="Email"
@@ -164,7 +205,7 @@ export default SignIn = ({ navigation }) => {
         type={InputIsType.Mail}
         clearError={setError}
       />
-      <Spacer height={30} />
+      <Spacer height={15} />
       <MyTextInput
         placeholder="Mot de passe"
         title="Password"
@@ -172,30 +213,71 @@ export default SignIn = ({ navigation }) => {
         type={InputIsType.Password}
         clearError={setError}
       />
-      {error === "" ? <Spacer height={30} /> : <ErreurView />}
-      <MyBtn nav={navigation} func={btnPressed} />
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "70%",
+          paddingHorizontal: 15,
+        }}
+      >
+        <Text style={{ color: "grey" }}>
+          Compte Admin :{" "}
+          <Text style={{ color: isEnabled ? "blue" : "grey" }}>{isAdmin}</Text>
+        </Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={isEnabled ? "lightblue" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+        />
+      </View>
+      <Animated.View
+        style={{
+          height: appearAnim,
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          overflow: "hidden",
+          paddingTop: 2,
+          marginBottom: isEnabled ? 5 : 0,
+        }}
+      >
+        <MyTextInput
+          placeholder="Code Admin"
+          title="AdminKEy"
+          setTitle={setAdminProof}
+          type={InputIsType.Text}
+          clearError={setError}
+        />
+      </Animated.View>
+      {error === "" ? <Spacer height={10} /> : <ErreurView />}
+      <MyBtn nav={navigation} func={btnPressed} title="S'inscrire" />
       <Spacer height={20} />
-      <View style={signStyle.socials}>
+      <View style={registerStyle.socials}>
         <ExternSign name={"google"} nav={navigation} />
         <ExternSign name={"github"} nav={navigation} />
       </View>
       <Spacer height={30} />
       <TouchableOpacity
         onPress={() => {
-          console.log("S'inscrire");
-          navigation.push("Register");
+          console.log("Aller Se connecter");
+          navigation.navigate("SignIn");
         }}
       >
         <Text style={{ textDecorationLine: "underline", fontSize: 15 }}>
-          Nouveau chez nous ? S'inscrire !
+          Déjà un compte ? Se connecter !
         </Text>
       </TouchableOpacity>
-      <Spacer height={25} />
+      <Spacer height={15} />
     </ScrollView>
   );
 };
 
-const signStyle = StyleSheet.create({
+const registerStyle = StyleSheet.create({
   home: {
     display: "flex",
     flexDirection: "column",
@@ -209,7 +291,7 @@ const signStyle = StyleSheet.create({
     alignItems: "center",
   },
   wlcTxt: {
-    fontSize: 50,
+    fontSize: 45,
     maxWidth: "80%",
     fontWeight: "bold",
     textAlign: "center",
