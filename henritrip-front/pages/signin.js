@@ -86,10 +86,10 @@ export default SignIn = ({ navigation }) => {
       });
 
     if (apiResult === undefined || apiResult === null) {
-      return noUser;
+      return { userID: noUser, role: "USER" };
     }
-    const id = apiResult["userID"];
-    return id;
+    return apiResult;
+    //return id;
   };
 
   let checkUID = (uid) => {
@@ -101,11 +101,14 @@ export default SignIn = ({ navigation }) => {
   let btnPressed = async (nav) => {
     if (!waitingApiResult) {
       setWaitingApiResult(true);
-      const uid = await login();
+      const result = await login();
+      const uid = result["userID"];
+      const role = result["role"];
       setWaitingApiResult(false);
       if (checkUID(uid)) {
         nav.push("HomePage", {
           userID: uid,
+          role: role,
         });
       }
     }

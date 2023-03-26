@@ -10,6 +10,8 @@ const mongo_sanitize = require("express-mongo-sanitize");
 require("dotenv").config();
 
 const usersRoute = require("./routes/users");
+const activitiesRoute = require("./routes/activities");
+const tripsRoute = require("./routes/trips");
 
 const limiter = rateLimit({
   windowMs: Number(process.env.LIM_MINS) * 60 * 1000,
@@ -57,5 +59,7 @@ app.use(
 
 //Ajouter les routes ici
 app.use("/api/users", usersRoute);
+app.use("/api/activities", activitiesRoute);
+app.use("/api/trips", tripsRoute);
 
 module.exports = app;

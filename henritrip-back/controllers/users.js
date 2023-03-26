@@ -48,7 +48,13 @@ exports.register = (req, res, next) => {
       .save()
       .then(() => {
         console.log("Utilisateur créé");
-        res.status(201).json({ message: "Utilisateur créé", userID: user._id });
+        res
+          .status(201)
+          .json({
+            message: "Utilisateur créé",
+            userID: user._id,
+            role: user.role,
+          });
       })
       .catch((error) => {
         const duplMess =
@@ -82,9 +88,11 @@ exports.login = (req, res, next) => {
       if (pw === user.password) {
         console.log("Connecté.e en tant que : " + user.email);
         //Mettre  un token de validation
-        res
-          .status(200)
-          .json({ message: "Utilisateur connecté", userID: user._id });
+        res.status(200).json({
+          message: "Utilisateur connecté",
+          userID: user._id,
+          role: user.role,
+        });
       } else {
         console.log("Paire login/mot de passe incorrecte.");
         res

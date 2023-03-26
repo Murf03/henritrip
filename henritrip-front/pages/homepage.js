@@ -17,6 +17,7 @@ import Feather from "@expo/vector-icons/Feather";
 import AdressInput from "../components/adressInput";
 import MyBtn from "../components/myBtn";
 import MyTooltip from "../components/tooltip";
+import AdminOption from "../components/adminOption";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -29,7 +30,9 @@ export default HomePage = ({ nav, route }) => {
   const [isVisible, setVisible] = useState(false);
   const myMarginTop = isVisible ? 0 : StatusBar.currentHeight;
   const userID = route.params["userID"];
-  console.log("Connecté.e en tant que : " + userID);
+  const role = route.params["role"];
+  const isAdmin = role === "ADMIN";
+
   const Profile = ({ navigation, userId }) => {
     return (
       <View>
@@ -107,6 +110,16 @@ export default HomePage = ({ nav, route }) => {
           title="Informations"
           desc="Faites vos recherches de RoadTrips parmi les nombreuses que nous proposons !"
         />
+        {isAdmin ? (
+          <View style={homeStyle.centerColFullW}>
+            <View style={homeStyle.adminBloc}>
+              <Text style={homeStyle.adminBlocTitle}>Options Admin</Text>
+              <AdminOption title="Créer une activité" option="activite" />
+              <AdminOption title="Créer un Trip" option="trip" />
+            </View>
+          </View>
+        ) : null}
+        <Spacer height={isAdmin ? 25 : 0} />
         <View style={homeStyle.tripsRecContainer}>
           <Text style={homeStyle.tripsRec}>Trips recommandés</Text>
           <TouchableOpacity
@@ -118,7 +131,7 @@ export default HomePage = ({ nav, route }) => {
             <Text style={homeStyle.seeAllTrips}>Voir +</Text>
           </TouchableOpacity>
         </View>
-        <Spacer height={20} />
+        <Spacer height={25} />
         <View
           style={{
             display: "flex",
@@ -161,7 +174,7 @@ export default HomePage = ({ nav, route }) => {
           />
           <Trip createdBy="Laurie P." city={2} imageNum={2} />
         </View>
-        <Spacer height={50} />
+        <Spacer height={30} />
       </ScrollView>
     );
   };
@@ -183,7 +196,13 @@ const homeStyle = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "rgba(173,216,230, 0.5)",
   },
-
+  centerColFullW: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   statusBarMargin: {
     marginTop: StatusBar.currentHeight,
   },
@@ -269,5 +288,24 @@ const homeStyle = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  adminBloc: {
+    width: "90%",
+    borderRadius: 20,
+    backgroundColor: "rgba(70, 50, 70, 0.5)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    paddingTop: 12,
+    paddingBottom: 15,
+    paddingLeft: 20,
+    rowGap: 10,
+  },
+  adminBlocTitle: {
+    fontSize: 20,
+    color: "white",
+    fontWeight: "bold",
+    marginVertical: 2.5,
   },
 });
